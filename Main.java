@@ -63,18 +63,17 @@ public class Main {
         return tries_left == 0 && !isWin();
     }
 
-    /* Checks if input is a valid lowercase letter. */
+    /* Checks if input is a valid lowercase letter or word. */
     public static boolean validateInput(String input) {
         char[] input_arr = input.toCharArray();
 
-        if (input_arr.length != 1) {
-            return false;
+        for (int i = 0; i < input_arr.length; i++) {
+            if (!Character.isLetter(input_arr[i]) || !Character.isLowerCase(input_arr[i])) {
+                return false;
+            }
         }
 
-        if (!Character.isLetter(input_arr[0])) {
-            return false;
-        }
-        return Character.isLowerCase(input_arr[0]);
+        return true;
     }
 
     /* Print the current layout of hangman characters. */
@@ -102,43 +101,76 @@ public class Main {
         while (!isWin()) {
             String input = stdin.nextLine();
             while (!validateInput(input)) {
-                System.out.println("Invalid input. Please enter a valid lowercase letter.");
+                System.out.println("Invalid input. Please enter a valid lowercase letter or word.");
                 input = stdin.nextLine();
             }
-    
-            char letter = input.charAt(0);
-            boolean exists = false;
-    
-            /* Determine if our guess is correct, and update our current guess word if applicable. */
-            for (int i = 0; i < word.length; i++) {
-                if (word[i] == letter) {
-                    guess[i] = letter;
-                    exists = true;
+            
+            /* Player guessed a letter */
+            if (input.length() == 1) {
+                char letter = input.charAt(0);
+                boolean exists = false;
+        
+                /* Determine if our guess is correct, and update our current guess word if applicable. */
+                for (int i = 0; i < word.length; i++) {
+                    if (word[i] == letter) {
+                        guess[i] = letter;
+                        exists = true;
+                    }
                 }
-            }
-    
-            /* Produce response corresponding to the guess. */
-            if (!exists) {
-                tries_left--;
-                if (isLose()) {
-                    System.out.println("You lost :(. You have ran out of tries and did not guess the word correctly.\nThe word is: " + word_str);
-                    System.exit(0);
+        
+                /* Produce response corresponding to the guess. */
+                if (!exists) {
+                    tries_left--;
+                    if (isLose()) {
+                        System.out.println("You lost :(. You have ran out of tries and did not guess the word correctly.\nThe word is: " + word_str);
+                        System.exit(0);
+                    }
+                    System.out.println("The letter does not exists in the word. Please try another letter. Number of guesses left: " + (tries_left));
+                    System.out.println();
+                    printLayout();
+                } else {
+                    if (isWin()) {
+                        System.out.println("You won! The word is: " + word_str);
+                        System.exit(0);
+                    }
+                    System.out.println("You guessed a letter correctly! Please enter another letter. Number of guesses left: " + (tries_left));
+                    System.out.println();
+                    printLayout();
                 }
-                System.out.println("The letter does not exists in the word. Please try another letter. Number of guesses left: " + (tries_left));
-                System.out.println();
-                printLayout();
-            } else {
-                if (isWin()) {
-                    System.out.println("You won! The word is: " + word_str);
-                    System.exit(0);
+            } else { /* player guessed a word */
+                if (input.length() != word.length) {
+                    tries_left--;
+                    if (isLose()) {
+                        System.out.println("You lost :(. You have ran out of tries and did not guess the word correctly.\nThe word is: " + word_str);
+                        System.exit(0);
+                    }
+                    System.out.println("The guessed word is incorrect. Please try another letter or guess another word. Number of guesses left: " + (tries_left));
+                    System.out.println();
+                    printLayout();
+                } else {
+                    boolean guessed_incorrectly = false;
+                    for (int i = 0; i < word.length; i++) {
+                        if (word[i] != input.charAt(i)) {
+                            guessed_incorrectly = true;
+                        }
+                    }
+
+                    if (guessed_incorrectly) {
+                        tries_left--;
+                        if (isLose()) {
+                            System.out.println("You lost :(. You have ran out of tries and did not guess the word correctly.\nThe word is: " + word_str);
+                            System.exit(0);
+                        }
+                        System.out.println("The guessed word is incorrect. Please try another letter or guess another word. Number of guesses left: " + (tries_left));
+                        System.out.println();
+                        printLayout();
+                    } else {
+                        System.out.println("You won! The word is: " + word_str);
+                        System.exit(0);
+                    }
                 }
-                System.out.println("You guessed a letter correctly! Please enter another letter. Number of guesses left: " + (tries_left));
-                System.out.println();
-                printLayout();
             }
         }
-
         stdin.close();
-
     }
 }
