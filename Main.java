@@ -63,6 +63,16 @@ public class Main {
         return tries_left == 0 && !isWin();
     }
 
+    /* Decrease the number of tries left and prints the response for incorrect inputs */
+    public static void incorrectResponse() {
+        tries_left--;
+        if (isLose()) {
+            System.out.println("You lost :(. You have ran out of tries and did not guess the word correctly.\nThe word is: " + word_str);
+            drawHangman();
+            System.exit(0);
+        }
+    }
+
     /* Checks if input is a valid lowercase letter or word. */
     public static boolean validateInput(String input) {
         char[] input_arr = input.toCharArray();
@@ -78,12 +88,106 @@ public class Main {
 
     /* Print the current layout of hangman characters. */
     public static void printLayout() {
+        drawHangman();
+        System.out.println();
         for (int i = 0; i < guess.length-1; i++) {
             System.out.print(guess[i] + " ");
         }
         System.out.print(guess[guess.length-1]);
         System.out.println();
-    } 
+    }
+
+    /* Prints the current hangman based on the number of tries left.
+        6: head, torso, left arm, right arm, left leg, right leg
+        5: head, torso, left arm, right arm, left leg
+        4: head, torso, left arm, right arm
+        3: head, torso, left arm
+        2: head, torso
+        1: head
+        0: deceased :(
+    ____________
+    |          |
+    |          O
+    |         /|\
+    |        / | \
+    |          |
+    |         / \
+    |        /   \
+    |
+    */
+    public static void drawHangman() {
+        if (tries_left == 6) {
+            System.out.println("____________");
+            System.out.println("|          |");
+            System.out.println("|          O");
+            System.out.println("|         /|\\");
+            System.out.println("|        / | \\");
+            System.out.println("|          |");
+            System.out.println("|         / \\");
+            System.out.println("|        /   \\");
+            System.out.println("|");
+        } else if (tries_left == 5) {
+            System.out.println("____________");
+            System.out.println("|          |");
+            System.out.println("|          O");
+            System.out.println("|         /|\\");
+            System.out.println("|        / | \\");
+            System.out.println("|          |");
+            System.out.println("|         /");
+            System.out.println("|        /");
+            System.out.println("|");
+        } else if (tries_left == 4) {
+            System.out.println("____________");
+            System.out.println("|          |");
+            System.out.println("|          O");
+            System.out.println("|         /|\\");
+            System.out.println("|        / | \\");
+            System.out.println("|          |");
+            System.out.println("|");
+            System.out.println("|");
+            System.out.println("|");
+        } else if (tries_left == 3) {
+            System.out.println("____________");
+            System.out.println("|          |");
+            System.out.println("|          O");
+            System.out.println("|         /|");
+            System.out.println("|        / |");
+            System.out.println("|          |");
+            System.out.println("|");
+            System.out.println("|");
+            System.out.println("|");
+        } else if (tries_left == 2) {
+            System.out.println("____________");
+            System.out.println("|          |");
+            System.out.println("|          O");
+            System.out.println("|          |");
+            System.out.println("|          |");
+            System.out.println("|          |");
+            System.out.println("|");
+            System.out.println("|");
+            System.out.println("|");
+        } else if (tries_left == 1) {
+            System.out.println("____________");
+            System.out.println("|          |");
+            System.out.println("|          O");
+            System.out.println("|");
+            System.out.println("|");
+            System.out.println("|");
+            System.out.println("|");
+            System.out.println("|");
+            System.out.println("|");
+        } else {
+            System.out.println("____________");
+            System.out.println("|          |");
+            System.out.println("|");
+            System.out.println("|");
+            System.out.println("|");
+            System.out.println("|");
+            System.out.println("|");
+            System.out.println("|");
+            System.out.println("|");
+        }
+    }
 
     /* Run the program. */
     public static void main(String[] args) throws FileNotFoundException {
@@ -120,11 +224,7 @@ public class Main {
         
                 /* Produce response corresponding to the guess. */
                 if (!exists) {
-                    tries_left--;
-                    if (isLose()) {
-                        System.out.println("You lost :(. You have ran out of tries and did not guess the word correctly.\nThe word is: " + word_str);
-                        System.exit(0);
-                    }
+                    incorrectResponse();
                     System.out.println("The letter does not exists in the word. Please try another letter. Number of guesses left: " + (tries_left));
                     System.out.println();
                     printLayout();
@@ -139,11 +239,7 @@ public class Main {
                 }
             } else { /* player guessed a word */
                 if (input.length() != word.length) {
-                    tries_left--;
-                    if (isLose()) {
-                        System.out.println("You lost :(. You have ran out of tries and did not guess the word correctly.\nThe word is: " + word_str);
-                        System.exit(0);
-                    }
+                    incorrectResponse();
                     System.out.println("The guessed word is incorrect. Please try another letter or guess another word. Number of guesses left: " + (tries_left));
                     System.out.println();
                     printLayout();
@@ -156,11 +252,7 @@ public class Main {
                     }
 
                     if (guessed_incorrectly) {
-                        tries_left--;
-                        if (isLose()) {
-                            System.out.println("You lost :(. You have ran out of tries and did not guess the word correctly.\nThe word is: " + word_str);
-                            System.exit(0);
-                        }
+                        incorrectResponse();
                         System.out.println("The guessed word is incorrect. Please try another letter or guess another word. Number of guesses left: " + (tries_left));
                         System.out.println();
                         printLayout();
