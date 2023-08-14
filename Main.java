@@ -36,7 +36,9 @@ public class Main {
     
     /* Retrieve a word to be used in game. */
     public static String getWord() throws FileNotFoundException {
+        /********** NOTE: replace file path below with own path to words.txt **********/
         File word_file = new File("/Users/paulinetang/Desktop/projects/hangman/words.txt");
+
         Scanner word_scanner = new Scanner(word_file);
         
         int word_index = 0;
